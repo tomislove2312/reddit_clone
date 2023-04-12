@@ -1,3 +1,5 @@
+//joined button needs to be fixed after you logout, on tutorial 2:20 and 4:50
+
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Menu,
@@ -17,18 +19,26 @@ import React from "react";
 import { FaRedditSquare } from "react-icons/fa";
 import { VscAccount } from "react-icons/vsc";
 import { IoSparkles } from "react-icons/io5";
-import { CgProfile } from "react-icons/cg";
+import { CgLogOut, CgProfile } from "react-icons/cg";
 import { MdOutlineLogin } from "react-icons/md";
 import { auth } from "@/src/firebase/clientApp";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from "recoil";
 import { authModalState } from "@/src/atoms/authModalAtom";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { communityState } from "@/src/atoms/communitiesAtom";
 
 type UserMenuProps = {};
 
 const UserMenu: React.FC<UserMenuProps> = () => {
+  const resetCommunityState = useResetRecoilState(communityState);
   const [authModal, setModalState] = useRecoilState(authModalState);
   const [user] = useAuthState(auth);
+
+  const logout = async () => {
+    await signOut(auth);
+    // resetCommunityState;
+  };
+
   return (
     <Menu>
       <MenuButton
@@ -88,9 +98,9 @@ const UserMenu: React.FC<UserMenuProps> = () => {
               fontSize="10pt"
               fontWeight={700}
               _hover={{ bg: "blue", color: "white" }}
-              onClick={() => signOut(auth)}
+              onClick={logout}
             >
-              <Flex>
+              <Flex align="center">
                 <Icon fontSize={20} mr={2} as={MdOutlineLogin} />
                 Logout
               </Flex>
